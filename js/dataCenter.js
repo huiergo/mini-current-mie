@@ -8,18 +8,18 @@ const BOX_HEIGHT = 50
 //count 必须定义好，所有 count 相加 ， 被 3 整除
 const layerList = [
     {
-        row: 3,
+        row: 5,
         column: 4,
         x: 0,//第一层 起始点x
         y: 0,//第一层 起始点y
         count: 3
     },
     {
-        row: 1,
-        column: 2,
+        row: 2,
+        column: 3,
         x: BOX_WIDTH / 2,
         y: BOX_HEIGHT / 2,
-        count: 1
+        count: 3
     },
     // {
     //     row: 2,
@@ -142,23 +142,25 @@ export default class DataCenter {
         // 如果从第一层开始判断每个元素， 那么有n层的 四个判断， 所以就是 (n-1)*  4次比较
         let array = this.boxDataFlat;
         for (let i = 0; i < array.length - 1; i++) {
+            array[i].highlight = true
             for (let j = i + 1; j < array.length; j++) {
                 if (array[j].layer > array[i].layer) {
                     // 1层的（2，2） 判断是否被挡住， 需要知道 2层 是否有(1,1) (1,2), (2,1), (2,2)
                     // （2，4）， 需要顶层 : (1,3), (1,4) , (2,3),(2,4)
-                    if (array[i].layer === 1 && array[i].row === 1 && array[i].col === 1) {
-                        console.log('来来来-------', array[j])
-                    }
-                    if (array[j].row === array[i].row && array[j].col === array[i].col) {
+                    if (array[j].row === array[i].row && array[j].col === array[i].col && !array[j].remove) {
+                        // （2，4） -> top层： (2,4)
                         array[i].highlight = false
                     }
-                    if (array[j].row === array[i].row && array[j].col === array[i].col - 1) {
+                    if (array[j].row === array[i].row && array[j].col === array[i].col - 1 && !array[j].remove) {
+                        // （2，4） -> top层： (2,3)
                         array[i].highlight = false
                     }
-                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col) {
+                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col && !array[j].remove) {
+                        // （2，4） -> top层： (1，4)
                         array[i].highlight = false
                     }
-                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col - 1) {
+                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col - 1 && !array[j].remove) {
+                        // （2，4） -> top层： (1，3)
                         array[i].highlight = false
                     }
 

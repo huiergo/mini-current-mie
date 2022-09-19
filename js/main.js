@@ -97,15 +97,11 @@ export default class Main {
     this.dataCenter.boxDataFlat.forEach(box => {
       let isXok = (touchX >= box.x && touchX <= box.x + box.width)
       let isYok = (touchY >= box.y && touchY <= box.y + box.height)
-      if (isXok && isYok) {
-        // todo: insertPoll
-        // if(box.highlight){
-        if (box.highlight) {
-          console.log("插入---》", box.row, box.col)
-          this.insertPool(box)
-        }
-
-        // }
+      if (isXok && isYok && box.highlight) {
+        console.log("插入---》", box.row, box.col)
+        this.insertPool(box)
+        box.setRemove(true)
+        this.dataCenter.judgeOverlay()
       }
     })
   }
@@ -219,7 +215,6 @@ export default class Main {
   render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // this.box.renderBoxData()
     this.renderBoxList()
   }
 

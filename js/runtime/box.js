@@ -23,14 +23,6 @@ export default class Box extends Sprite {
     this.dataCenter = new DataCenter()
   }
 
-  renderBoxData() {
-    const item = this.dataCenter.boxDataFlat[i];
-    let img = new Image()
-    img.src = item.highlight ? item.img : item.disabledImg
-    this.ctx.drawImage(img, item.x, item.y, this.width, this.height)
-  }
-
-
   renderSelf(img, x, y, width, height) {
     this.ctx.drawImage(
       img,
