@@ -4,6 +4,7 @@ import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
 import DataBus from './databus'
+import DataCenter from './dataCenter';
 import Box from './runtime/box'
 
 const ctx = canvas.getContext('2d')
@@ -28,15 +29,29 @@ export default class Main {
       'touchstart',
       this.touchHandler
     )
+
+
+    canvas.removeEventListener(
+      'touchend',
+      this.touchHandler
+    )
+
+    this.touchEndHandler = this.touchEndHandler.bind(this)
+    canvas.addEventListener('touchend', this.touchEndHandler)
+
+
+
     let img = new Image();
-    img.src =BG_IMG_SRC;
+    img.src = BG_IMG_SRC;
     // this.bg = new BackGround(ctx)
     this.player = new Player(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
-    this.box=new Box(ctx)
-    ctx.drawImage(img,0,0,50,50)
+    this.dataCenter = new DataCenter()
+
+    this.box = new Box(ctx)
+    ctx.drawImage(img, 0, 0, 50, 50)
 
     this.bindLoop = this.loop.bind(this)
     this.hasEventBind = false
@@ -48,6 +63,38 @@ export default class Main {
       this.bindLoop,
       canvas
     )
+  }
+
+
+  touchEndHandler(e) {
+    e.preventDefault()
+
+    let touchX = e.changedTouches[0].clientX
+    let touchY = e.changedTouches[0].clientY
+
+    console.log(touchX, touchY)
+    let touchBox = null
+    console.log(this.dataCenter.boxDataFlat)
+
+    this.dataCenter.boxDataFlat.forEach(box => {
+      let isXok = (touchX >= box.x && touchX <= box.x + box.width)
+      let isYok = (touchY >= box.y && touchY <= box.y + box.height)
+      if (isXok && isYok) {
+        console.log(box)
+      }
+    })
+
+
+    // this.boxList.forEach(box => {
+    //   let isXok = (touchX >= box.x && touchX <= box.x + box.width)
+    //   let isYok = (touchY >= box.y && touchY <= box.y + box.height)
+    //   if (isXok && isYok && box.layer == 1) {
+    //     touchBox = box
+    //     console.log("touchBox", touchBox)
+    //     this.insertPoll(box)
+    //     return
+    //   }
+    // });
   }
 
   /**
@@ -103,9 +150,9 @@ export default class Main {
     const area = this.gameinfo.btnArea
 
     if (x >= area.startX
-        && x <= area.endX
-        && y >= area.startY
-        && y <= area.endY) this.restart()
+      && x <= area.endX
+      && y >= area.startY
+      && y <= area.endY) this.restart()
   }
 
   /**
