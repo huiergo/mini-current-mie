@@ -12,20 +12,21 @@ const layerList = [
         column: 4,
         x: 0,//第一层 起始点x
         y: 0,//第一层 起始点y
-        count: 3*4-5
+        count: 2
     },
     {
-        row: 1,
-        column: 5,
+        row: 2,
+        column: 2,
         x: BOX_WIDTH / 2,
         y: BOX_HEIGHT / 2,
-        count: 1*5-2
+        count: 2
     },
     // {
-    //     row: 4,
-    //     column: 6,
-    //     x: BOX_WIDTH *2,
-    //     y: BOX_HEIGHT * 2
+    //     row: 2,
+    //     column: 2,
+    //     x: BOX_WIDTH / 2 + 10,
+    //     y: BOX_HEIGHT / 2 + 10,
+    //     count: 2
     // }
 ]
 
@@ -34,13 +35,13 @@ const IMGTYPE = {
     1: 'images/bullet.png',
     // 2: 'images/explosion19.png'
 }
-const DISABLED_IMGTYPE={
+const DISABLED_IMGTYPE = {
     0: 'images/hero.png',
     1: 'images/bg.jpg',
-    // 2:'images/explosion7.png'
-  }
-  
-  
+    // 2: 'images/explosion7.png'
+}
+
+
 /**
  * 全局状态管理器
  */
@@ -70,106 +71,123 @@ export default class DataCenter {
     generaterBoxData() {
         // 随机layer 中的 0， 1 --->  0 代表图片显示空， 或者此处不参与drawImage
         //  比如 30个格子， 随机展示5个
-      let result =  this.randomZeroFlag()
-        
+
         // for (let i = 0; i < layerList[0].row * layerList[0].col ; i++) {
         //     const element = array[i];
-            
-        // }
 
+        // }
+        let totalImgCount = 0
         layerList.map((layerItem, index) => {
             let tempList = []
+            totalImgCount += layerItem.count
             for (let i = 0; i < layerItem.row; i++) {
                 for (let j = 0; j < layerItem.column; j++) {
-                    tempList.push({ row: i + 1, col: j + 1, layer: index, x: j * BOX_WIDTH + layerItem.x, y: i * BOX_HEIGHT + layerItem.y, img: IMGTYPE[index], disabledImg: DISABLED_IMGTYPE[index], width: BOX_WIDTH, height: BOX_WIDTH,highlight:true })
-                    this.boxDataFlat.push({ row: i + 1, col: j + 1, layer: index, x: j * BOX_WIDTH + layerItem.x, y: i * BOX_HEIGHT + layerItem.y, img: IMGTYPE[index], disabledImg: DISABLED_IMGTYPE[index],width: BOX_WIDTH, height: BOX_WIDTH ,highlight:true})
+                    tempList.push({ row: i + 1, col: j + 1, layer: index, x: j * BOX_WIDTH + layerItem.x, y: i * BOX_HEIGHT + layerItem.y, img: IMGTYPE[index], disabledImg: DISABLED_IMGTYPE[index], width: BOX_WIDTH, height: BOX_WIDTH, highlight: true })
+                    this.boxDataFlat.push({ row: i + 1, col: j + 1, layer: index, x: j * BOX_WIDTH + layerItem.x, y: i * BOX_HEIGHT + layerItem.y, img: IMGTYPE[index], disabledImg: DISABLED_IMGTYPE[index], width: BOX_WIDTH, height: BOX_WIDTH, highlight: true })
                 }
             }
             this.boxData.push(tempList)
         })
+
+        console.log('this.boxDataFlat----> ', this.boxDataFlat)
+        let count = this.randomZeroFlag(this.boxDataFlat, totalImgCount)
+        console.log("randomZeroFlag--->", count)
     }
 
-    randomZeroFlag(){
-            
+    /**
+     * 抽牌算法： 从总数中，抽取多少个数
+     * @param array 
+     * @param count 随机多少个数
+     */
+    randomZeroFlag(array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], count = 5) {
+        //输出数组
+        var out = [];
+        //输出个数
+        while (out.length < count) {
+            var temp = Math.floor((Math.random() * array.length));
+            var ttt = array.splice(temp, 1)
+            out.push(ttt[0]);
+        }
+        return out
     }
 
-    judgeOverlay(){
+    judgeOverlay() {
         console.log(222)
         // 如果从第一层开始判断每个元素， 那么有n层的 四个判断， 所以就是 (n-1)*  4次比较
-        let array=this.boxDataFlat;
-        for (let i = 0; i < array.length-1; i++) {
-           for (let j = i+1; j < array.length; j++) {
-            if(array[j].layer>array[i].layer){
-            // 1层的（2，2） 判断是否被挡住， 需要知道 2层 是否有(1,1) (1,2), (2,1), (2,2)
-            // （2，4）， 需要顶层 : (1,3), (1,4) , (2,3),(2,4)
-                if(array[i].row===2&& array[i].col===4){
-                    console.log('来来来-------',array[j])
-                }
-                if(array[j].row===array[i].row && array[j].col===array[i].col ){
-                    array[i].highlight=false
-
-                    let logTest={
-                        current:{
-                            row:array[i].row ,
-                            col:array[i].col ,
-                        },
-                        topLayer:{
-                            row:array[j].row ,
-                            col:array[j].col ,
-                        }
+        let array = this.boxDataFlat;
+        for (let i = 0; i < array.length - 1; i++) {
+            for (let j = i + 1; j < array.length; j++) {
+                if (array[j].layer > array[i].layer) {
+                    // 1层的（2，2） 判断是否被挡住， 需要知道 2层 是否有(1,1) (1,2), (2,1), (2,2)
+                    // （2，4）， 需要顶层 : (1,3), (1,4) , (2,3),(2,4)
+                    if (array[i].layer === 1 && array[i].row === 1 && array[i].col === 1) {
+                        console.log('来来来-------', array[j])
                     }
-                    console.log('进入 11 1--》',logTest)
-                }
-                if(array[j].row===array[i].row && array[j].col===array[i].col-1){
-                    array[i].highlight=false
+                    if (array[j].row === array[i].row && array[j].col === array[i].col) {
+                        array[i].highlight = false
 
-                    let logTest={
-                        current:{
-                            row:array[i].row ,
-                            col:array[i].col ,
-                        },
-                        topLayer:{
-                            row:array[j].row ,
-                            col:array[j].col ,
+                        let logTest = {
+                            current: {
+                                row: array[i].row,
+                                col: array[i].col,
+                            },
+                            topLayer: {
+                                row: array[j].row,
+                                col: array[j].col,
+                            }
                         }
+                        console.log('进入 11 1--》', logTest)
                     }
-                    console.log('进入 11 1--》',logTest)
-                }
-                if(array[j].row===array[i].row-1 && array[j].col===array[i].col){
-                    array[i].highlight=false
+                    if (array[j].row === array[i].row && array[j].col === array[i].col - 1) {
+                        array[i].highlight = false
 
-                    let logTest={
-                        current:{
-                            row:array[i].row ,
-                            col:array[i].col ,
-                        },
-                        topLayer:{
-                            row:array[j].row ,
-                            col:array[j].col ,
+                        let logTest = {
+                            current: {
+                                row: array[i].row,
+                                col: array[i].col,
+                            },
+                            topLayer: {
+                                row: array[j].row,
+                                col: array[j].col,
+                            }
                         }
+                        console.log('进入 11 1--》', logTest)
                     }
-                    console.log('进入 11 1--》',logTest)
-                }
-                if(array[j].row===array[i].row-1 && array[j].col===array[i].col-1){
-                    array[i].highlight=false
+                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col) {
+                        array[i].highlight = false
 
-                    let logTest={
-                        current:{
-                            row:array[i].row ,
-                            col:array[i].col ,
-                        },
-                        topLayer:{
-                            row:array[j].row ,
-                            col:array[j].col ,
+                        let logTest = {
+                            current: {
+                                row: array[i].row,
+                                col: array[i].col,
+                            },
+                            topLayer: {
+                                row: array[j].row,
+                                col: array[j].col,
+                            }
                         }
+                        console.log('进入 11 1--》', logTest)
                     }
-                    console.log('进入 11 1--》',logTest)
+                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col - 1) {
+                        array[i].highlight = false
+
+                        let logTest = {
+                            current: {
+                                row: array[i].row,
+                                col: array[i].col,
+                            },
+                            topLayer: {
+                                row: array[j].row,
+                                col: array[j].col,
+                            }
+                        }
+                        console.log('进入 11 1--》', logTest)
+                    }
+
                 }
-              
             }
-           }
         }
-        console.log('结果---》',this.boxDataFlat)
+        console.log('结果---》', this.boxDataFlat)
     }
 
 }

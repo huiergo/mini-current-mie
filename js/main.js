@@ -80,7 +80,13 @@ export default class Main {
       let isXok = (touchX >= box.x && touchX <= box.x + box.width)
       let isYok = (touchY >= box.y && touchY <= box.y + box.height)
       if (isXok && isYok) {
-        console.log(box)
+        // todo: insertPoll
+        // if(box.highlight){
+        if (box.highlight) {
+          console.log("插入---》", box.row, box.col)
+        }
+
+        // }
       }
     })
 
