@@ -10,10 +10,13 @@ import Box from './runtime/box'
 const ctx = canvas.getContext('2d')
 const databus = new DataBus()
 
+const fixedW = 95;
 
 const BG_IMG_SRC = 'images/bg.jpg'
 
 // todo: 整理到常量池
+let score = 0;
+
 const speed = 10;
 // todo: 现在是每层的图案是一样的，这个需要做到 图片随机， 所以 这里要改！！！
 let countObj = {
@@ -216,7 +219,8 @@ export default class Main {
   render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    this.box.renderBoxData()
+    // this.box.renderBoxData()
+    this.renderBoxList()
   }
 
   // 游戏逻辑更新主函数
@@ -270,6 +274,38 @@ export default class Main {
       });
     }
 
+    // 最终平移
+    if (!isFlying && !isBooming) {
+      this.stack = this.stack.filter(element => {
+        return element.hidden == false;
+      });
+
+      // 重新规整数据，赋值targetY，targetX
+      this.stack.forEach((element, index) => {
+        //设置目标位置
+        element.setTargetPoint(index * element.width, 400)
+        let distanceY = element.targetY - element.y
+        let distanceX = Math.abs(element.targetX - element.x)
+
+        // 此处根据Y下落速度计算X下落速度，防止X位移距离过小，导致Y轴速度过快
+        let k = 0
+        if (distanceX == 0) {
+          k = 0
+        } else {
+          k = distanceX / distanceY
+        }
+        element.setVelocity(k * speed, speed)
+      });
+
+      // 分数增加
+      score = 0
+      this.dataCenter.boxDataFlat.forEach(element => {
+        if (element.hidden) {
+          score++;
+        }
+      });
+    }
+
   }
 
   // 实现游戏帧循环
@@ -284,4 +320,24 @@ export default class Main {
       canvas
     )
   }
+
+  //  渲染boxList 中所有的数据
+  renderBoxList() {
+    this.dataCenter.boxDataFlat.forEach(box => {
+      if (box.hidden) {
+        if (box.boomCount > 0) {
+          // 渲染爆炸图片
+          this.box.renderBoom(fixedW * (5 - box.boomCount), 0, box.x, box.y);
+        }
+      } else {
+        //  渲染本身图片
+        // this.box.render˝Self(fixedW * box.elementType, 0, box.x, box.y);
+        let img = new Image()
+        img.src = box.highlight ? box.img : box.disabledImg
+        this.box.renderSelf(img, box.x, box.y, box.width, box.height);
+      }
+    });
+  }
 }
+
+

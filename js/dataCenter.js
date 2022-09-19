@@ -151,63 +151,15 @@ export default class DataCenter {
                     }
                     if (array[j].row === array[i].row && array[j].col === array[i].col) {
                         array[i].highlight = false
-
-                        let logTest = {
-                            current: {
-                                row: array[i].row,
-                                col: array[i].col,
-                            },
-                            topLayer: {
-                                row: array[j].row,
-                                col: array[j].col,
-                            }
-                        }
-                        console.log('进入 11 1--》', logTest)
                     }
                     if (array[j].row === array[i].row && array[j].col === array[i].col - 1) {
                         array[i].highlight = false
-
-                        let logTest = {
-                            current: {
-                                row: array[i].row,
-                                col: array[i].col,
-                            },
-                            topLayer: {
-                                row: array[j].row,
-                                col: array[j].col,
-                            }
-                        }
-                        console.log('进入 11 1--》', logTest)
                     }
                     if (array[j].row === array[i].row - 1 && array[j].col === array[i].col) {
                         array[i].highlight = false
-
-                        let logTest = {
-                            current: {
-                                row: array[i].row,
-                                col: array[i].col,
-                            },
-                            topLayer: {
-                                row: array[j].row,
-                                col: array[j].col,
-                            }
-                        }
-                        console.log('进入 11 1--》', logTest)
                     }
                     if (array[j].row === array[i].row - 1 && array[j].col === array[i].col - 1) {
                         array[i].highlight = false
-
-                        let logTest = {
-                            current: {
-                                row: array[i].row,
-                                col: array[i].col,
-                            },
-                            topLayer: {
-                                row: array[j].row,
-                                col: array[j].col,
-                            }
-                        }
-                        console.log('进入 11 1--》', logTest)
                     }
 
                 }
@@ -215,5 +167,4 @@ export default class DataCenter {
         }
         console.log('结果---》', this.boxDataFlat)
     }
-
 }
