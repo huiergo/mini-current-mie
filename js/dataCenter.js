@@ -1,4 +1,4 @@
-
+import BoxInfo from './base/boxInfo'
 let instance
 
 const BOX_IMG = 'images/enemy.png'
@@ -12,14 +12,14 @@ const layerList = [
         column: 4,
         x: 0,//第一层 起始点x
         y: 0,//第一层 起始点y
-        count: 2
+        count: 3
     },
     {
-        row: 2,
+        row: 1,
         column: 2,
         x: BOX_WIDTH / 2,
         y: BOX_HEIGHT / 2,
-        count: 2
+        count: 1
     },
     // {
     //     row: 2,
@@ -50,9 +50,15 @@ export default class DataCenter {
         if (instance) return instance
 
         instance = this
+        // 层区域： 二维数组 
         this.boxData = []
 
+        // 层区域： 一维数组
         this.boxDataFlat = []
+
+        // 插槽区域： 
+        this.stack = []
+        this.stackPoolLength = 7
 
         this.reset()
         console.log(111)
@@ -82,15 +88,47 @@ export default class DataCenter {
             totalImgCount += layerItem.count
             for (let i = 0; i < layerItem.row; i++) {
                 for (let j = 0; j < layerItem.column; j++) {
-                    tempList.push({ row: i + 1, col: j + 1, layer: index, x: j * BOX_WIDTH + layerItem.x, y: i * BOX_HEIGHT + layerItem.y, img: IMGTYPE[index], disabledImg: DISABLED_IMGTYPE[index], width: BOX_WIDTH, height: BOX_WIDTH, highlight: true })
-                    this.boxDataFlat.push({ row: i + 1, col: j + 1, layer: index, x: j * BOX_WIDTH + layerItem.x, y: i * BOX_HEIGHT + layerItem.y, img: IMGTYPE[index], disabledImg: DISABLED_IMGTYPE[index], width: BOX_WIDTH, height: BOX_WIDTH, highlight: true })
+
+                    const boxItem = new BoxInfo({
+                        row: i + 1,
+                        col: j + 1,
+                        layer: index,
+                        x: j * BOX_WIDTH + layerItem.x,
+                        y: i * BOX_HEIGHT + layerItem.y,
+                        img: IMGTYPE[index],
+                        disabledImg: DISABLED_IMGTYPE[index],
+                        width: BOX_WIDTH,
+                        height: BOX_WIDTH,
+                        highlight: true,
+                        hidden: false
+                    });
+                    console.log('[testItem--->]', boxItem)
+
+
+                    // let boxItem = {
+                    //     row: i + 1,
+                    //     col: j + 1,
+                    //     layer: index,
+                    //     x: j * BOX_WIDTH + layerItem.x,
+                    //     y: i * BOX_HEIGHT + layerItem.y,
+                    //     img: IMGTYPE[index],
+                    //     disabledImg: DISABLED_IMGTYPE[index],
+                    //     width: BOX_WIDTH,
+                    //     height: BOX_WIDTH,
+                    //     highlight: true,
+                    //     hidden: false
+                    // }
+
+
+                    tempList.push(boxItem)
+                    this.boxDataFlat.push(boxItem)
                 }
             }
             this.boxData.push(tempList)
         })
 
         console.log('this.boxDataFlat----> ', this.boxDataFlat)
-        let count = this.randomZeroFlag(this.boxDataFlat, totalImgCount)
+        let count = this.randomZeroFlag(this.boxDataFlat, 1)
         console.log("randomZeroFlag--->", count)
     }
 
@@ -99,7 +137,7 @@ export default class DataCenter {
      * @param array 
      * @param count 随机多少个数
      */
-    randomZeroFlag(array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], count = 5) {
+    randomZeroFlag(array, count) {
         //输出数组
         var out = [];
         //输出个数

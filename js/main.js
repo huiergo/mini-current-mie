@@ -51,6 +51,11 @@ export default class Main {
     this.dataCenter = new DataCenter()
 
     this.box = new Box(ctx)
+
+    // 插槽区
+    this.stack = this.dataCenter.stack
+
+
     ctx.drawImage(img, 0, 0, 50, 50)
 
     this.bindLoop = this.loop.bind(this)
@@ -84,23 +89,45 @@ export default class Main {
         // if(box.highlight){
         if (box.highlight) {
           console.log("插入---》", box.row, box.col)
+          this.insertPool(box)
         }
 
         // }
       }
     })
+  }
+
+  insertPool(box) {
+    if (this.stack.length >= this.dataCenter.stackPoolLength) {
+      return
+    }
+
+    // 具体插入到哪个位置
+    let insertIndex = 0;
+    let hasSimple = false;
+
+    // 判断插入到什么位置
+    this.stack.forEach(element => {
+      if (box.elementType == element.elementType) {
+        hasSimple = true;
+        insertIndex++;
+      } else {
+        if (hasSimple) return
+        else {
+          insertIndex++;
+        }
+      }
+    });
+
+    // 插入操作
+    if (this.stack.length == insertIndex) {
+      this.stack.push(box)
+    } else {
+      this.stack.splice(insertIndex, 0, box)
+    }
 
 
-    // this.boxList.forEach(box => {
-    //   let isXok = (touchX >= box.x && touchX <= box.x + box.width)
-    //   let isYok = (touchY >= box.y && touchY <= box.y + box.height)
-    //   if (isXok && isYok && box.layer == 1) {
-    //     touchBox = box
-    //     console.log("touchBox", touchBox)
-    //     this.insertPoll(box)
-    //     return
-    //   }
-    // });
+    console.log("---->", this.stack)
   }
 
   /**

@@ -35,8 +35,9 @@ export default class Box extends Sprite {
     for (let i = 0; i < this.dataCenter.boxDataFlat.length; i++) {
       const item = this.dataCenter.boxDataFlat[i];
       let img = new Image()
-      img.src = item.highlight? item.img:item.disabledImg
+      img.src = item.highlight ? item.img : item.disabledImg
       this.ctx.drawImage(img, item.x, item.y, this.width, this.height)
     }
   }
+
 }
