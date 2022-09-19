@@ -42,6 +42,7 @@ const DISABLED_IMGTYPE = {
 }
 
 
+
 /**
  * 全局状态管理器
  */
@@ -100,24 +101,11 @@ export default class DataCenter {
                         width: BOX_WIDTH,
                         height: BOX_WIDTH,
                         highlight: true,
-                        hidden: false
+                        hidden: false,
+                        //  todo: elementType
+                        elementType: index
                     });
                     console.log('[testItem--->]', boxItem)
-
-
-                    // let boxItem = {
-                    //     row: i + 1,
-                    //     col: j + 1,
-                    //     layer: index,
-                    //     x: j * BOX_WIDTH + layerItem.x,
-                    //     y: i * BOX_HEIGHT + layerItem.y,
-                    //     img: IMGTYPE[index],
-                    //     disabledImg: DISABLED_IMGTYPE[index],
-                    //     width: BOX_WIDTH,
-                    //     height: BOX_WIDTH,
-                    //     highlight: true,
-                    //     hidden: false
-                    // }
 
 
                     tempList.push(boxItem)

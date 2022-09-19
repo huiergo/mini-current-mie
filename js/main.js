@@ -10,7 +10,17 @@ import Box from './runtime/box'
 const ctx = canvas.getContext('2d')
 const databus = new DataBus()
 
+
 const BG_IMG_SRC = 'images/bg.jpg'
+
+// todo: 整理到常量池
+const speed = 10;
+// todo: 现在是每层的图案是一样的，这个需要做到 图片随机， 所以 这里要改！！！
+let countObj = {
+  0: 0,
+  1: 0,
+  2: 0,
+};
 /**
  * 游戏主函数
  */
@@ -128,50 +138,61 @@ export default class Main {
 
 
     console.log("---->", this.stack)
-  }
 
-  /**
-   * 随着帧数变化的敌机生成逻辑
-   * 帧数取模定义成生成的频率
-   */
-  enemyGenerate() {
-    if (databus.frame % 30 === 0) {
-      const enemy = databus.pool.getItemByClass('enemy', Enemy)
-      enemy.init(6)
-      databus.enemys.push(enemy)
-    }
-  }
 
-  // 全局碰撞检测
-  collisionDetection() {
-    const that = this
+    this.initCountObj()
 
-    databus.bullets.forEach((bullet) => {
-      for (let i = 0, il = databus.enemys.length; i < il; i++) {
-        const enemy = databus.enemys[i]
+    // 重新规整数据，赋值targetY，targetX
+    this.stack.forEach((element, index) => {
+      //设置目标位置
+      element.setTargetPoint(index * element.width, 400)
+      let distanceY = element.targetY - element.y
+      let distanceX = Math.abs(element.targetX - element.x)
 
-        if (!enemy.isPlaying && enemy.isCollideWith(bullet)) {
-          enemy.playAnimation()
-          that.music.playExplosion()
-
-          bullet.visible = false
-          databus.score += 1
-
-          break
-        }
+      // 此处根据Y下落速度计算X下落速度，防止X位移距离过小，导致Y轴速度过快
+      let k = 0
+      if (distanceX == 0) {
+        k = 0
+      } else {
+        k = distanceX / distanceY
       }
-    })
-
-    for (let i = 0, il = databus.enemys.length; i < il; i++) {
-      const enemy = databus.enemys[i]
-
-      if (this.player.isCollideWith(enemy)) {
-        databus.gameOver = true
-
-        break
+      element.setVelocity(k * speed, speed)
+      console.log('----> element.elementType--->', element.elementType)
+      countObj[element.elementType]++
+      if (countObj[element.elementType] === 3) {
+        element.isPlayMusic = true
       }
-    }
+
+    });
+
+
+    console.log('countObj---->', countObj)
+
+    this.stack.forEach(element => {
+      let count = countObj[element.elementType]
+      if (count == 3) {
+        // element.setHidden(true)
+        element.setBoomCount(5)
+
+        console.log('boom=====>')
+
+      } else {
+        // element.setHidden(false)
+        element.setBoomCount(0)
+      }
+    });
+
+
   }
+
+  initCountObj() {
+    countObj = {
+      0: 0,
+      1: 0,
+      2: 0,
+    };
+  }
+
 
   // 游戏结束后的触摸事件处理逻辑
   touchEventHandler(e) {
@@ -200,24 +221,55 @@ export default class Main {
 
   // 游戏逻辑更新主函数
   update() {
-    if (databus.gameOver) return
+    let isFlying = false
+    let isBooming = false
 
-    // this.bg.update()
+    // 两部操作，1 下落，2 平移
+    this.dataCenter.boxDataFlat.forEach(element => {
+      if (element.targetY > element.y) {
+        element.y = element.y + element.speedY
+      } else {
+        element.y = element.targetY
+      }
 
-    databus.bullets
-      .concat(databus.enemys)
-      .forEach((item) => {
-        item.update()
-      })
+      if (element.targetX > element.x) {
+        element.x = Math.abs(element.x - element.targetX) < element.speedX ? element.targetX : element.x + element.speedX
+      } else {
+        element.x = Math.abs(element.x - element.targetX) <= element.speedX ? element.targetX : element.x - element.speedX
 
-    this.enemyGenerate()
+      }
 
-    this.collisionDetection()
+      if (element.targetY != element.y) {
+        isFlying = true
+      }
 
-    if (databus.frame % 20 === 0) {
-      this.player.shoot()
-      this.music.playShoot()
+    });
+
+    // 去重算法，boom
+
+    if (!isFlying) {
+      this.stack.forEach(element => {
+        let count = countObj[element.elementType]
+        if (count == 3) {
+          if (element.isPlayMusic) {
+            this.music.playExplosion()
+            console.log('111')
+            element.isPlayMusic = false
+          }
+          element.setHidden(true)
+        } else {
+          element.setHidden(false)
+        }
+
+        if (element.boomCount > 0) {
+          element.boomCount--;
+          isBooming = true;
+        } else {
+          element.boomCount = 0
+        }
+      });
     }
+
   }
 
   // 实现游戏帧循环

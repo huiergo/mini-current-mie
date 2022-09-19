@@ -5,20 +5,6 @@ const BOX_IMG = 'images/enemy.png'
 const BOX_WIDTH = 50
 const BOX_HEIGHT = 50
 
-const layerList = [
-  {
-    row: 2,
-    column: 2,
-    x: 0,//第一层 起始点x
-    y: 0,//第一层 起始点y
-  },
-  {
-    row: 1,
-    column: 1,
-    x: BOX_WIDTH / 2,
-    y: BOX_HEIGHT / 2
-  }
-]
 
 /**
  * 游戏背景类

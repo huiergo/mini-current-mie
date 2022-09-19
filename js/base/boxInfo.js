@@ -15,7 +15,7 @@
 
 export default class BoxInfo {
     constructor(props) {
-        const { row, col, layer, x, y, img, disabledImg, width, height, hidden } = props
+        const { row, col, layer, x, y, img, disabledImg, width, height, hidden = false, elementType = 0 } = props
         console.log('---->boxInfo', row, col, layer, x, y, img, disabledImg, width, height, hidden)
         this.layer = layer
         this.row = row
@@ -30,19 +30,14 @@ export default class BoxInfo {
         this.highlight = true
 
 
-        // this.layer = layer
-        // this.elementType = elementType
-        // this.x = x
-        // this.y = y
-        // this.width = width
-        // this.height = height
+        this.elementType = elementType
         // this.ids = ids
-        // this.targetX = x
-        // this.targetY = y
-        // this.speedX = 0
-        // this.speedY = 0
-        // this.boomCount = 0
-        // this.hidden = false
+        this.targetX = x
+        this.targetY = y
+        this.speedX = 0
+        this.speedY = 0
+        this.boomCount = 0
+        this.hidden = false
     }
 
     setTargetPoint(x, y) {
