@@ -7,12 +7,12 @@ atlas.src = 'images/Common.png'
 export default class GameInfo {
   renderGameScore(ctx, score) {
     ctx.fillStyle = '#ffffff'
-    ctx.font = '20px Arial'
+    ctx.font = '50px Arial'
 
     ctx.fillText(
       score,
-      10,
-      30
+      screenWidth / 2,
+      300
     )
   }
 

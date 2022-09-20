@@ -50,21 +50,23 @@ export default class DataCenter {
 
         // boom
         this.animations = []
+        this.score = 0
 
-        this.reset()
-        console.log(111)
         this.generaterBoxData()
         // attention: 
         this.judgeOverlay()
     }
 
     reset() {
-        this.frame = 0
         this.score = 0
-        this.bullets = []
-        this.enemys = []
+        this.boxData = []
         this.animations = []
-        this.gameOver = false
+        this.boxDataFlat = []
+        this.stack = []
+
+        this.generaterBoxData()
+        // attention: 
+        this.judgeOverlay()
     }
     generaterBoxData() {
         let totalImgCount = 0

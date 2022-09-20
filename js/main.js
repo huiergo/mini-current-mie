@@ -6,9 +6,6 @@ import { swap } from './utils/CommonUtils';
 
 const ctx = canvas.getContext('2d')
 
-// todo: 整理到常量池
-let score = 0;
-
 const speed = 10;
 
 /**
@@ -18,10 +15,14 @@ export default class Main {
   constructor() {
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
-    this.restart()
+    this.beginGame()
   }
 
   restart() {
+    this.dataCenter.reset()
+  }
+
+  beginGame() {
     canvas.removeEventListener(
       'touchstart',
       this.touchHandler
@@ -40,8 +41,6 @@ export default class Main {
     this.music = new Music()
 
     this.dataCenter = new DataCenter()
-
-    this.stack = this.dataCenter.stack
 
     this.bindLoop = this.loop.bind(this)
     this.hasEventBind = false
@@ -74,10 +73,14 @@ export default class Main {
     if (touchIndex != -1) {
       swap(this.dataCenter.boxDataFlat, touchIndex, this.dataCenter.boxDataFlat.length - 1)
     }
+    // 测试：
+    // if (this.dataCenter.score == 6) {
+    //   this.restart()
+    // }
   }
 
   insertPool(box) {
-    if (this.stack.length >= this.dataCenter.stackPoolLength) {
+    if (this.dataCenter.stack.length >= this.dataCenter.stackPoolLength) {
       return
     }
 
@@ -86,7 +89,7 @@ export default class Main {
     let hasSimple = false;
 
     // 判断插入到什么位置
-    this.stack.forEach(element => {
+    this.dataCenter.stack.forEach(element => {
       if (box.elementType == element.elementType) {
         hasSimple = true;
         insertIndex++;
@@ -99,16 +102,16 @@ export default class Main {
     });
 
     // 插入操作
-    if (this.stack.length == insertIndex) {
-      this.stack.push(box)
+    if (this.dataCenter.stack.length == insertIndex) {
+      this.dataCenter.stack.push(box)
     } else {
-      this.stack.splice(insertIndex, 0, box)
+      this.dataCenter.stack.splice(insertIndex, 0, box)
     }
 
-    this.willRemoveSame(this.stack, 3)
+    this.willRemoveSame(this.dataCenter.stack, 3)
 
     // 重新规整数据，赋值targetY，targetX
-    this.stack.forEach((element, index) => {
+    this.dataCenter.stack.forEach((element, index) => {
       //设置目标位置
       element.setTargetPoint(index * element.width, 400)
       let distanceY = element.targetY - element.y
@@ -188,7 +191,7 @@ export default class Main {
 
     // 去重算法，boom
     if (!isFlying) {
-      this.stack.forEach(element => {
+      this.dataCenter.stack.forEach(element => {
         if (element.willRemove) {
           if (!element.isStart) {
             element.playAnimation()
@@ -203,12 +206,12 @@ export default class Main {
 
     //最终平移
     if (!isFlying && !isBooming) {
-      this.stack = this.stack.filter(element => {
+      this.dataCenter.stack = this.dataCenter.stack.filter(element => {
         return element.willRemove == false;
       });
 
       // 重新规整数据，赋值targetY，targetX
-      this.stack.forEach((element, index) => {
+      this.dataCenter.stack.forEach((element, index) => {
         //设置目标位置
         element.setTargetPoint(index * element.width, 400)
         let distanceY = element.targetY - element.y
@@ -225,10 +228,10 @@ export default class Main {
       });
 
       // 分数增加
-      score = 0
+      this.dataCenter.score = 0
       this.dataCenter.boxDataFlat.forEach(element => {
         if (element.willRemove) {
-          score++;
+          this.dataCenter.score++;
         }
       });
     }
@@ -268,7 +271,7 @@ export default class Main {
     })
 
     //todo 绘制分数
-    this.gameinfo.renderGameScore(ctx, score)
+    this.gameinfo.renderGameScore(ctx, this.dataCenter.score)
   }
 }
 
