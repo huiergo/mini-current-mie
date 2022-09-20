@@ -100,7 +100,7 @@ export default class DataCenter {
                         disabledImg: DISABLED_IMGTYPE[index],
                         width: BOX_WIDTH,
                         height: BOX_WIDTH,
-                        highlight: true,
+                        canClick: true,
                         hidden: false,
                         //  todo: elementType
                         elementType: index
@@ -142,26 +142,26 @@ export default class DataCenter {
         // 如果从第一层开始判断每个元素， 那么有n层的 四个判断， 所以就是 (n-1)*  4次比较
         let array = this.boxDataFlat;
         for (let i = 0; i < array.length - 1; i++) {
-            array[i].highlight = true
+            array[i].canClick = true
             for (let j = i + 1; j < array.length; j++) {
                 if (array[j].layer > array[i].layer) {
                     // 1层的（2，2） 判断是否被挡住， 需要知道 2层 是否有(1,1) (1,2), (2,1), (2,2)
                     // （2，4）， 需要顶层 : (1,3), (1,4) , (2,3),(2,4)
-                    if (array[j].row === array[i].row && array[j].col === array[i].col && !array[j].remove) {
+                    if (array[j].row === array[i].row && array[j].col === array[i].col && !array[j].fallDown) {
                         // （2，4） -> top层： (2,4)
-                        array[i].highlight = false
+                        array[i].canClick = false
                     }
-                    if (array[j].row === array[i].row && array[j].col === array[i].col - 1 && !array[j].remove) {
+                    if (array[j].row === array[i].row && array[j].col === array[i].col - 1 && !array[j].fallDown) {
                         // （2，4） -> top层： (2,3)
-                        array[i].highlight = false
+                        array[i].canClick = false
                     }
-                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col && !array[j].remove) {
+                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col && !array[j].fallDown) {
                         // （2，4） -> top层： (1，4)
-                        array[i].highlight = false
+                        array[i].canClick = false
                     }
-                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col - 1 && !array[j].remove) {
+                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col - 1 && !array[j].fallDown) {
                         // （2，4） -> top层： (1，3)
-                        array[i].highlight = false
+                        array[i].canClick = false
                     }
 
                 }

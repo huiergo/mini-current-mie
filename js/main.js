@@ -97,10 +97,10 @@ export default class Main {
     this.dataCenter.boxDataFlat.forEach(box => {
       let isXok = (touchX >= box.x && touchX <= box.x + box.width)
       let isYok = (touchY >= box.y && touchY <= box.y + box.height)
-      if (isXok && isYok && box.highlight) {
+      if (isXok && isYok && box.canClick) {
         console.log("插入---》", box.row, box.col)
         this.insertPool(box)
-        box.setRemove(true)
+        box.setFallDown(true)
         this.dataCenter.judgeOverlay()
       }
     })
@@ -375,7 +375,7 @@ export default class Main {
         //  渲染本身图片
         // this.box.render˝Self(fixedW * box.elementType, 0, box.x, box.y);
         let img = new Image()
-        img.src = box.highlight ? box.img : box.disabledImg
+        img.src = box.canClick ? box.img : box.disabledImg
         this.box.renderSelf(img, box.x, box.y, box.width, box.height);
       }
     });

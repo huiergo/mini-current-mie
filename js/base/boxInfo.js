@@ -1,18 +1,3 @@
-
-// let item = {
-//     row: i + 1,
-//     col: j + 1,
-//     layer: index,
-//     x: j * BOX_WIDTH + layerItem.x,
-//     y: i * BOX_HEIGHT + layerItem.y,
-//     img: IMGTYPE[index],
-//     disabledImg: DISABLED_IMGTYPE[index],
-//     width: BOX_WIDTH,
-//     height: BOX_WIDTH,
-//     highlight: true,
-//     hidden: false
-// }
-
 export default class BoxInfo {
     constructor(props) {
         const { row, col, layer, x, y, img, disabledImg, width, height, hidden = false, elementType = 0 } = props
@@ -27,7 +12,7 @@ export default class BoxInfo {
         this.width = width
         this.height = height
         this.hidden = hidden
-        this.highlight = true
+        this.canClick = true
 
 
         this.elementType = elementType
@@ -38,7 +23,8 @@ export default class BoxInfo {
         this.speedY = 0
         this.boomCount = 0
         this.hidden = false
-        this.remove = false
+        this.fallDown = false
+
         this.dispear = false
     }
 
@@ -65,8 +51,7 @@ export default class BoxInfo {
         this.dispear = dispear
     }
 
-
-    setRemove(remove) {
-        this.remove = remove
+    setFallDown(fallDown) {
+        this.fallDown = fallDown
     }
 }
