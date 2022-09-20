@@ -1,7 +1,5 @@
 import Sprite from './sprite'
-import DataBus from '../databus'
-
-const databus = new DataBus()
+import DataCenter from '../dataCenter'
 
 const __ = {
   timer: Symbol('timer'),
@@ -11,11 +9,15 @@ const __ = {
  * 简易的帧动画类实现
  */
 export default class Animation extends Sprite {
-  constructor(imgSrc, width, height) {
-    super(imgSrc, width, height)
-
+  constructor(imgSrc, x, y, width, height) {
+    super(imgSrc, x, y, width, height)
+    // add: 
+    this.dataCenter = new DataCenter()
     // 当前动画是否播放中
     this.isPlaying = false
+
+    // add:
+    this.isStart = false
 
     // 动画是否需要循环播放
     this.loop = false
@@ -39,7 +41,7 @@ export default class Animation extends Sprite {
      * 推入到全局动画池里面
      * 便于全局绘图的时候遍历和绘制当前动画帧
      */
-    databus.animations.push(this)
+    this.dataCenter.animations.push(this)
   }
 
   /**
@@ -73,6 +75,9 @@ export default class Animation extends Sprite {
     // 动画播放的时候精灵图不再展示，播放帧动画的具体帧
     this.visible = false
 
+    // add: attention:
+    this.isStart = true
+
     this.isPlaying = true
     this.loop = loop
 
@@ -88,6 +93,7 @@ export default class Animation extends Sprite {
 
   // 停止帧动画播放
   stop() {
+    console.log("stop回调了m")
     this.isPlaying = false
 
     if (this[__.timer]) clearInterval(this[__.timer])
