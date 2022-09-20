@@ -12,22 +12,15 @@ const layerList = [
         column: 3,
         x: 0,//第一层 起始点x
         y: 0,//第一层 起始点y
-        count: 3
+        count: 0
     },
     {
-        row: 2,
-        column: 2,
+        row: 3,
+        column: 3,
         x: BOX_WIDTH / 2,
         y: BOX_HEIGHT / 2,
-        count: 2
+        count: 0
     },
-    // {
-    //     row: 2,
-    //     column: 2,
-    //     x: BOX_WIDTH / 2 + 10,
-    //     y: BOX_HEIGHT / 2 + 10,
-    //     count: 2
-    // }
 ]
 
 const IMGTYPE = {
@@ -40,8 +33,6 @@ const DISABLED_IMGTYPE = {
     1: 'images/bg.jpg',
     // 2: 'images/explosion7.png'
 }
-
-
 
 /**
  * 全局状态管理器
@@ -61,6 +52,9 @@ export default class DataCenter {
         this.stack = []
         this.stackPoolLength = 7
 
+        // boom
+        this.animations = []
+
         this.reset()
         console.log(111)
         this.generaterBoxData()
@@ -76,13 +70,6 @@ export default class DataCenter {
         this.gameOver = false
     }
     generaterBoxData() {
-        // 随机layer 中的 0， 1 --->  0 代表图片显示空， 或者此处不参与drawImage
-        //  比如 30个格子， 随机展示5个
-
-        // for (let i = 0; i < layerList[0].row * layerList[0].col ; i++) {
-        //     const element = array[i];
-
-        // }
         let totalImgCount = 0
         layerList.map((layerItem, index) => {
             let tempList = []
@@ -100,13 +87,10 @@ export default class DataCenter {
                         disabledImg: DISABLED_IMGTYPE[index],
                         width: BOX_WIDTH,
                         height: BOX_WIDTH,
-                        canClick: true,
-                        hidden: false,
-                        //  todo: elementType
-                        elementType: index
+                        elementType: index,
+                        // canClick: true,
+                        // hidden: false,
                     });
-                    console.log('[testItem--->]', boxItem)
-
 
                     tempList.push(boxItem)
                     this.boxDataFlat.push(boxItem)
@@ -115,9 +99,8 @@ export default class DataCenter {
             this.boxData.push(tempList)
         })
 
-        console.log('this.boxDataFlat----> ', this.boxDataFlat)
-        let count = this.randomZeroFlag(this.boxDataFlat, 1)
-        console.log("randomZeroFlag--->", count)
+        // this.randomZeroFlag(this.boxDataFlat, 1)
+        console.log("-->>", this.boxDataFlat)
     }
 
     /**
@@ -138,7 +121,6 @@ export default class DataCenter {
     }
 
     judgeOverlay() {
-        console.log(222)
         // 如果从第一层开始判断每个元素， 那么有n层的 四个判断， 所以就是 (n-1)*  4次比较
         let array = this.boxDataFlat;
         for (let i = 0; i < array.length - 1; i++) {
@@ -163,10 +145,8 @@ export default class DataCenter {
                         // （2，4） -> top层： (1，3)
                         array[i].canClick = false
                     }
-
                 }
             }
         }
-        console.log('结果---》', this.boxDataFlat)
     }
 }
