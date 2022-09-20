@@ -1,31 +1,27 @@
-export default class BoxInfo {
-    constructor(props) {
-        const { row, col, layer, x, y, img, disabledImg, width, height, hidden = false, elementType = 0 } = props
-        console.log('---->boxInfo', row, col, layer, x, y, img, disabledImg, width, height, hidden)
+import Animation from "../base/animation"
+
+export default class BoxInfo extends Animation {
+    constructor(row, col, layer, x, y, img, width, height, elementType) {
+        super(img, x, y, width, height)
         this.layer = layer
         this.row = row
         this.col = col
-        this.x = x
-        this.y = y
-        this.img = img
-        this.disabledImg = disabledImg
-        this.width = width
-        this.height = height
-        this.hidden = hidden
-        this.canClick = true
-
 
         this.elementType = elementType
-        // this.ids = ids
+
         this.targetX = x
         this.targetY = y
+
         this.speedX = 0
         this.speedY = 0
-        this.boomCount = 0
-        this.hidden = false
         this.fallDown = false
+        this.visible = true
+        this.canClick = true
+        this.willRemove = false
 
+        // attention:
         this.dispear = false
+        this.initExplosionAnimation()
     }
 
     setTargetPoint(x, y) {
@@ -42,8 +38,8 @@ export default class BoxInfo {
         this.boomCount = boomCount
     }
 
-    setHidden(hidden) {
-        this.hidden = hidden
+    setVisible(visible) {
+        this.visible = visible
     }
 
 
@@ -53,5 +49,27 @@ export default class BoxInfo {
 
     setFallDown(fallDown) {
         this.fallDown = fallDown
+    }
+
+    updatePosition(x, y) {
+        this.x = x
+        this.y = y
+    }
+    // add: 可以用来更新 disabledImg
+    updateImage(imgSrc) {
+        this.img = imgSrc
+    }
+
+    // 预定义爆炸的帧动画
+    initExplosionAnimation() {
+        const frames = []
+
+        const EXPLO_IMG_PREFIX = 'images/explosion'
+        const EXPLO_FRAME_COUNT = 10
+
+        for (let i = 0; i < EXPLO_FRAME_COUNT; i++) {
+            frames.push(`${EXPLO_IMG_PREFIX + (i + 1)}.png`)
+        }
+        this.initFrames(frames)
     }
 }
