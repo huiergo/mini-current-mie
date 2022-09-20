@@ -2,15 +2,17 @@
  * 游戏基础的精灵类
  */
 export default class Sprite {
-  constructor(imgSrc = '', width = 0, height = 0, x = 0, y = 0) {
+  constructor(imgSrc = '', x = 0, y = 0, width = 0, height = 0) {
     this.img = new Image()
-    this.img.src = imgSrc
+    this.imgSrc = imgSrc
 
     this.width = width
     this.height = height
 
     this.x = x
     this.y = y
+
+    this.canClick = true
 
     this.visible = true
   }
@@ -20,7 +22,10 @@ export default class Sprite {
    */
   drawToCanvas(ctx) {
     if (!this.visible) return
-
+    //绘制圆角矩形背景
+    this.drawRoundRectColor(ctx, this.x, this.y, this.width, this.height, 10)
+    //绘制上层图层
+    this.img.src = this.imgSrc
     ctx.drawImage(
       this.img,
       this.x,
@@ -28,6 +33,27 @@ export default class Sprite {
       this.width,
       this.height
     )
+  }
+
+  /**
+   * 绘制背景色
+   */
+  drawRoundRectColor(context, x, y, w, h, r) {  //绘制圆角矩形（纯色填充）
+    context.save();
+    if (this.canClick) {
+      context.fillStyle = "#fff";
+      context.strokeStyle = '#fff';
+    } else {
+      context.fillStyle = "#ccc";
+      context.strokeStyle = '#ccc';
+    }
+
+    context.lineJoin = 'round';  //交点设置成圆角
+    context.lineWidth = r;
+    context.strokeRect(x + r / 2, y + r / 2, w - r, h - r);
+    context.fillRect(x + r, y + r, w - r * 2, h - r * 2);
+    context.stroke();
+    context.closePath();
   }
 
   /**
@@ -42,8 +68,8 @@ export default class Sprite {
     if (!this.visible || !sp.visible) return false
 
     return !!(spX >= this.x
-              && spX <= this.x + this.width
-              && spY >= this.y
-              && spY <= this.y + this.height)
+      && spX <= this.x + this.width
+      && spY >= this.y
+      && spY <= this.y + this.height)
   }
 }

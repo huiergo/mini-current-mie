@@ -58,6 +58,7 @@ export default class DataCenter {
         this.reset()
         console.log(111)
         this.generaterBoxData()
+        // attention: 
         this.judgeOverlay()
     }
 
@@ -76,21 +77,17 @@ export default class DataCenter {
             totalImgCount += layerItem.count
             for (let i = 0; i < layerItem.row; i++) {
                 for (let j = 0; j < layerItem.column; j++) {
-
-                    const boxItem = new BoxInfo({
-                        row: i + 1,
-                        col: j + 1,
-                        layer: index,
-                        x: j * BOX_WIDTH + layerItem.x,
-                        y: i * BOX_HEIGHT + layerItem.y,
-                        img: IMGTYPE[index],
-                        disabledImg: DISABLED_IMGTYPE[index],
-                        width: BOX_WIDTH,
-                        height: BOX_WIDTH,
-                        elementType: index,
-                        // canClick: true,
-                        // hidden: false,
-                    });
+                    const boxItem = new BoxInfo(
+                        i + 1,
+                        j + 1,
+                        index,
+                        j * BOX_WIDTH + layerItem.x,
+                        i * BOX_HEIGHT + layerItem.y,
+                        IMGTYPE[index],
+                        BOX_WIDTH,
+                        BOX_WIDTH,
+                        index,
+                    );
 
                     tempList.push(boxItem)
                     this.boxDataFlat.push(boxItem)
@@ -100,7 +97,7 @@ export default class DataCenter {
         })
 
         // this.randomZeroFlag(this.boxDataFlat, 1)
-        console.log("-->>", this.boxDataFlat)
+        console.log("-->>boxDataFlat", this.boxDataFlat)
     }
 
     /**

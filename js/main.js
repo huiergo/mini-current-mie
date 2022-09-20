@@ -1,18 +1,9 @@
-import Player from './player/index'
-import Enemy from './npc/enemy'
-import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
-import DataBus from './databus'
 import DataCenter from './dataCenter';
-import Box from './runtime/box'
+import BackGround from './runtime/background'
 
 const ctx = canvas.getContext('2d')
-const databus = new DataBus()
-
-const fixedW = 95;
-
-const BG_IMG_SRC = 'images/bg.jpg'
 
 // todo: 整理到常量池
 let score = 0;
@@ -36,13 +27,10 @@ export default class Main {
   }
 
   restart() {
-    databus.reset()
-
     canvas.removeEventListener(
       'touchstart',
       this.touchHandler
     )
-
 
     canvas.removeEventListener(
       'touchend',
@@ -52,24 +40,13 @@ export default class Main {
     this.touchEndHandler = this.touchEndHandler.bind(this)
     canvas.addEventListener('touchend', this.touchEndHandler)
 
-
-
-    let img = new Image();
-    img.src = BG_IMG_SRC;
-    // this.bg = new BackGround(ctx)
-    this.player = new Player(ctx)
+    this.bg = new BackGround(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
     this.dataCenter = new DataCenter()
 
-    this.box = new Box(ctx)
-
-    // 插槽区
     this.stack = this.dataCenter.stack
-
-
-    ctx.drawImage(img, 0, 0, 50, 50)
 
     this.bindLoop = this.loop.bind(this)
     this.hasEventBind = false
@@ -83,22 +60,14 @@ export default class Main {
     )
   }
 
-
   touchEndHandler(e) {
     e.preventDefault()
-
     let touchX = e.changedTouches[0].clientX
     let touchY = e.changedTouches[0].clientY
-
-    console.log(touchX, touchY)
-    let touchBox = null
-    console.log(this.dataCenter.boxDataFlat)
-
     this.dataCenter.boxDataFlat.forEach(box => {
       let isXok = (touchX >= box.x && touchX <= box.x + box.width)
       let isYok = (touchY >= box.y && touchY <= box.y + box.height)
       if (isXok && isYok && box.canClick) {
-        console.log("插入---》", box.row, box.col)
         this.insertPool(box)
         box.setFallDown(true)
         this.dataCenter.judgeOverlay()
@@ -135,14 +104,9 @@ export default class Main {
       this.stack.splice(insertIndex, 0, box)
     }
 
-
-    console.log("---->", this.stack)
-
-
-    this.initCountObj()
-
     this.dispearSame(this.stack, 3)
 
+    this.initCountObj()
 
     // 重新规整数据，赋值targetY，targetX
     this.stack.forEach((element, index) => {
@@ -159,40 +123,23 @@ export default class Main {
         k = distanceX / distanceY
       }
       element.setVelocity(k * speed, speed)
-      console.log('----> element.elementType--->', element.elementType)
       countObj[element.elementType]++
-      // if (countObj[element.elementType] === 3) {
-      //   element.isPlayMusic = true
-      // }
-      if (element.dispear) {
-        element.isPlayMusic = true
+      if (countObj[element.elementType] === 3) {
+        // element.isPlayMusic = true
       }
 
     });
-
-
-    console.log('countObj---->', countObj)
 
     this.stack.forEach(element => {
       // let count = countObj[element.elementType]
       // if (count == 3) {
       if (element.dispear) {
-        // element.setHidden(true)
-        element.setBoomCount(5)
-
-        console.log('boom=====>')
-
+        element.willRemove = true
       } else {
-        // element.setHidden(false)
-        element.setBoomCount(0)
+        element.willRemove = false
       }
     });
-
-    console.log('[this.stack=====>]', this.stack)
-    console.log('[this.dataCenter.boxDataFlat=====>]', this.dataCenter.boxDataFlat)
-
   }
-
 
   initCountObj() {
     countObj = {
@@ -233,35 +180,8 @@ export default class Main {
       }
 
     }
-    // return array
   }
 
-
-
-  // 游戏结束后的触摸事件处理逻辑
-  touchEventHandler(e) {
-    e.preventDefault()
-
-    const x = e.touches[0].clientX
-    const y = e.touches[0].clientY
-
-    const area = this.gameinfo.btnArea
-
-    if (x >= area.startX
-      && x <= area.endX
-      && y >= area.startY
-      && y <= area.endY) this.restart()
-  }
-
-  /**
-   * canvas重绘函数
-   * 每一帧重新绘制所有的需要展示的元素
-   */
-  render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    this.renderBoxList()
-  }
 
   // 游戏逻辑更新主函数
   update() {
@@ -280,46 +200,38 @@ export default class Main {
         element.x = Math.abs(element.x - element.targetX) < element.speedX ? element.targetX : element.x + element.speedX
       } else {
         element.x = Math.abs(element.x - element.targetX) <= element.speedX ? element.targetX : element.x - element.speedX
-
       }
+      // add: 
+      element.updatePosition(element.x, element.y)
 
       if (element.targetY != element.y) {
         isFlying = true
       }
 
+      //Todo 此处可以根据canClick设置图片灰色还是高亮
     });
 
     // 去重算法，boom
-
     if (!isFlying) {
       this.stack.forEach(element => {
         // let count = countObj[element.elementType]
         // if (count == 3) {
-
         if (element.dispear) {
-          if (element.isPlayMusic) {
+          if (!element.isStart) {
+            element.playAnimation()
             this.music.playExplosion()
-            console.log('111')
-            element.isPlayMusic = false
           }
-          element.setHidden(true)
-        } else {
-          element.setHidden(false)
         }
-
-        if (element.boomCount > 0) {
-          element.boomCount--;
-          isBooming = true;
-        } else {
-          element.boomCount = 0
+        if (element.isPlaying) {
+          isBooming = true
         }
       });
     }
 
-    // 最终平移
+    //最终平移
     if (!isFlying && !isBooming) {
       this.stack = this.stack.filter(element => {
-        return element.hidden == false;
+        return element.willRemove == false;
       });
 
       // 重新规整数据，赋值targetY，targetX
@@ -342,18 +254,15 @@ export default class Main {
       // 分数增加
       score = 0
       this.dataCenter.boxDataFlat.forEach(element => {
-        if (element.hidden) {
+        if (element.willRemove) {
           score++;
         }
       });
     }
-
   }
 
   // 实现游戏帧循环
   loop() {
-    databus.frame++
-
     this.update()
     this.render()
 
@@ -363,22 +272,29 @@ export default class Main {
     )
   }
 
-  //  渲染boxList 中所有的数据
-  renderBoxList() {
+  /**
+   * canvas重绘函数
+   * 每一帧重新绘制所有的需要展示的元素
+   */
+  render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    //绘制格子
     this.dataCenter.boxDataFlat.forEach(box => {
-      if (box.hidden) {
-        if (box.boomCount > 0) {
-          // 渲染爆炸图片
-          this.box.renderBoom(fixedW * (5 - box.boomCount), 0, box.x, box.y);
-        }
-      } else {
-        //  渲染本身图片
-        // this.box.render˝Self(fixedW * box.elementType, 0, box.x, box.y);
-        let img = new Image()
-        img.src = box.canClick ? box.img : box.disabledImg
-        this.box.renderSelf(img, box.x, box.y, box.width, box.height);
-      }
+      box.drawToCanvas(ctx)
     });
+
+    //播放boom
+    this.dataCenter.animations.forEach(ani => {
+      if (ani.isPlaying) {
+        ani.aniRender(ctx)
+      }
+    })
+
+    //todo 绘制背景
+
+    //todo 绘制分数
+    this.gameinfo.renderGameScore(ctx, score)
   }
 }
 
