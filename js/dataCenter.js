@@ -8,18 +8,18 @@ const BOX_HEIGHT = 50
 //count 必须定义好，所有 count 相加 ， 被 3 整除
 const layerList = [
     {
-        row: 5,
-        column: 4,
+        row: 3,
+        column: 3,
         x: 0,//第一层 起始点x
         y: 0,//第一层 起始点y
         count: 3
     },
     {
         row: 2,
-        column: 3,
+        column: 2,
         x: BOX_WIDTH / 2,
         y: BOX_HEIGHT / 2,
-        count: 3
+        count: 2
     },
     // {
     //     row: 2,
