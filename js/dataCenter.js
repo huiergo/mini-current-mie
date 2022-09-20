@@ -24,15 +24,11 @@ const layerList = [
 ]
 
 const IMGTYPE = {
-    0: 'images/enemy.png',
-    1: 'images/bullet.png',
-    // 2: 'images/explosion19.png'
+    1: 'images/enemy.png',
+    2: 'images/bullet.png',
+    3: 'images/explosion19.png'
 }
-const DISABLED_IMGTYPE = {
-    0: 'images/hero.png',
-    1: 'images/bg.jpg',
-    // 2: 'images/explosion7.png'
-}
+
 
 /**
  * 全局状态管理器
@@ -83,10 +79,9 @@ export default class DataCenter {
                         index,
                         j * BOX_WIDTH + layerItem.x,
                         i * BOX_HEIGHT + layerItem.y,
-                        IMGTYPE[index],
+                        IMGTYPE[1],
                         BOX_WIDTH,
                         BOX_WIDTH,
-                        index,
                     );
 
                     tempList.push(boxItem)
@@ -96,6 +91,7 @@ export default class DataCenter {
             this.boxData.push(tempList)
         })
 
+        this.fillBox(this.boxDataFlat, 3)
         // this.randomZeroFlag(this.boxDataFlat, 1)
         console.log("-->>boxDataFlat", this.boxDataFlat)
     }
@@ -145,5 +141,49 @@ export default class DataCenter {
                 }
             }
         }
+    }
+
+    fillBox(array, typeCount) {
+
+        if (array.length % 3 != 0) {
+            return
+        }
+
+        let elementTypeList = []
+        let elementType = 0
+        let singleCount = array.length / typeCount
+        for (let index = 0; index < array.length; index++) {
+            if (index % singleCount == 0) {
+                elementType++;
+            }
+            elementTypeList.push(elementType);
+        }
+
+        //打乱顺序
+        this.shuffle(elementTypeList)
+
+        elementTypeList.forEach((type, index) => {
+            array[index].setElementType(type)
+            array[index].setImgSrc(IMGTYPE[type])
+        });
+    }
+
+    /**
+     * 洗牌算法:
+     * 该方法就是每次在数组中随机产生一个位置，依次将数组中的每一项与该次产生的随机位置上的元素交换位置：
+     * @param {arr} 即将重排的数组 
+     * @returns 重排后的数组
+     */
+    shuffle(arr) {
+        var l = arr.length
+        var index, temp
+        while (l > 0) {
+            index = Math.floor(Math.random() * l)
+            temp = arr[l - 1]
+            arr[l - 1] = arr[index]
+            arr[index] = temp
+            l--
+        }
+        return arr
     }
 }

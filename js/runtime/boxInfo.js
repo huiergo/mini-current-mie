@@ -1,13 +1,13 @@
 import Animation from "../base/animation"
 
 export default class BoxInfo extends Animation {
-    constructor(row, col, layer, x, y, img, width, height, elementType) {
+    constructor(row, col, layer, x, y, img, width, height) {
         super(img, x, y, width, height)
         this.layer = layer
         this.row = row
         this.col = col
 
-        this.elementType = elementType
+        this.elementType = 1
 
         this.targetX = x
         this.targetY = y
@@ -57,6 +57,14 @@ export default class BoxInfo extends Animation {
     updatePosition(x, y) {
         this.x = x
         this.y = y
+    }
+
+    setElementType(elementType) {
+        this.elementType = elementType
+    }
+
+    setImgSrc(imgSrc) {
+        this.imgSrc = imgSrc
     }
 
     // 预定义爆炸的帧动画
