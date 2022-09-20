@@ -39,6 +39,7 @@ export default class BoxInfo {
         this.boomCount = 0
         this.hidden = false
         this.remove = false
+        this.dispear = false
     }
 
     setTargetPoint(x, y) {
@@ -58,6 +59,12 @@ export default class BoxInfo {
     setHidden(hidden) {
         this.hidden = hidden
     }
+
+
+    setDispear(dispear) {
+        this.dispear = dispear
+    }
+
 
     setRemove(remove) {
         this.remove = remove

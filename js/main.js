@@ -198,15 +198,15 @@ export default class Main {
 
   // 判断3个就消除: 
   // 扩展算法： 连着几个消掉
-  dispearSame(paramsArr, count) {
-    let array = deepClone(paramsArr)
+  dispearSame(array, count) {
+    // let array = deepClone(paramsArr)
     for (let i = 0; i < array.length; i++) {
       //  如果有一个不相等， i 就需要移动到当前 j 的位置
       // 如果都相等 ， 1. 消除3个， 2  i 移动到最后一个 j的位置
       let flag = 1
       let flagIndexList = [i]
       for (let j = i + 1; j < count; j++) {
-        if (array[i].elementType === array[j].elementType) {
+        if (array[i] && array[j] && array[i].elementType === array[j].elementType) {
           flag++
           flagIndexList.push(j)
         }
@@ -214,11 +214,11 @@ export default class Main {
       if (flag === count) {
         i = i + count - 1
         flagIndexList.forEach(item => {
-          array[item].hidden = true
+          array[item].setDispear(true)
         })
       }
     }
-    return array
+    // return array
   }
 
 
