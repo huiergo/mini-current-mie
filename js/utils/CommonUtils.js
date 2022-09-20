@@ -18,3 +18,9 @@ function deepClone(obj = {}) {
 
     return result
 }
+
+export function swap(array, orginIndex, targetIndex) {
+    let temp = array[targetIndex]
+    array[targetIndex] = array[orginIndex]
+    array[orginIndex] = temp
+}

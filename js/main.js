@@ -2,6 +2,7 @@ import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
 import DataCenter from './dataCenter';
 import BackGround from './runtime/background'
+import { swap } from './utils/CommonUtils';
 
 const ctx = canvas.getContext('2d')
 
@@ -58,15 +59,21 @@ export default class Main {
     e.preventDefault()
     let touchX = e.changedTouches[0].clientX
     let touchY = e.changedTouches[0].clientY
-    this.dataCenter.boxDataFlat.forEach(box => {
+    let touchIndex = -1
+    this.dataCenter.boxDataFlat.forEach((box, index) => {
       let isXok = (touchX >= box.x && touchX <= box.x + box.width)
       let isYok = (touchY >= box.y && touchY <= box.y + box.height)
       if (isXok && isYok && box.canClick) {
+        touchIndex = index
         this.insertPool(box)
         box.setFallDown(true)
         this.dataCenter.judgeOverlay()
       }
     })
+    //将被点击的元素放置到数组末位，使其可以绘制到最上层
+    if (touchIndex != -1) {
+      swap(this.dataCenter.boxDataFlat, touchIndex, this.dataCenter.boxDataFlat.length - 1)
+    }
   }
 
   insertPool(box) {
@@ -245,6 +252,9 @@ export default class Main {
   render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+    //todo 绘制背景
+    this.bg.drawToCanvas(ctx)
+
     //绘制格子
     this.dataCenter.boxDataFlat.forEach(box => {
       box.drawToCanvas(ctx)
@@ -256,8 +266,6 @@ export default class Main {
         ani.aniRender(ctx)
       }
     })
-
-    //todo 绘制背景
 
     //todo 绘制分数
     this.gameinfo.renderGameScore(ctx, score)

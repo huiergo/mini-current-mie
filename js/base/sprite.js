@@ -5,7 +5,6 @@ export default class Sprite {
   constructor(imgSrc = '', x = 0, y = 0, width = 0, height = 0) {
     this.img = new Image()
 
-    this.img.src = imgSrc
     this.imgSrc = imgSrc
 
     this.width = width
