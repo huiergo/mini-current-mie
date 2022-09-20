@@ -141,6 +141,9 @@ export default class Main {
 
     this.initCountObj()
 
+    this.dispearSame(this.stack, 3)
+
+
     // 重新规整数据，赋值targetY，targetX
     this.stack.forEach((element, index) => {
       //设置目标位置
@@ -158,7 +161,10 @@ export default class Main {
       element.setVelocity(k * speed, speed)
       console.log('----> element.elementType--->', element.elementType)
       countObj[element.elementType]++
-      if (countObj[element.elementType] === 3) {
+      // if (countObj[element.elementType] === 3) {
+      //   element.isPlayMusic = true
+      // }
+      if (element.dispear) {
         element.isPlayMusic = true
       }
 
@@ -168,8 +174,9 @@ export default class Main {
     console.log('countObj---->', countObj)
 
     this.stack.forEach(element => {
-      let count = countObj[element.elementType]
-      if (count == 3) {
+      // let count = countObj[element.elementType]
+      // if (count == 3) {
+      if (element.dispear) {
         // element.setHidden(true)
         element.setBoomCount(5)
 
@@ -198,28 +205,37 @@ export default class Main {
 
   // 判断3个就消除: 
   // 扩展算法： 连着几个消掉
+
   dispearSame(array, count) {
     // let array = deepClone(paramsArr)
     for (let i = 0; i < array.length; i++) {
       //  如果有一个不相等， i 就需要移动到当前 j 的位置
       // 如果都相等 ， 1. 消除3个， 2  i 移动到最后一个 j的位置
-      let flag = 1
-      let flagIndexList = [i]
-      for (let j = i + 1; j < count; j++) {
+
+      let flag = 1 // 判断 flag === count
+      let flagIndexList = []  // 设置 满足条件 的元素 dispear = true
+      let c = 1 // 控制 j 加加的次数
+
+      for (let j = i + c; c < count; j++) {
+        console.log(i, j, c)
         if (array[i] && array[j] && array[i].elementType === array[j].elementType) {
           flag++
           flagIndexList.push(j)
         }
+        c++
       }
       if (flag === count) {
+        flagIndexList.push(i)
         i = i + count - 1
         flagIndexList.forEach(item => {
           array[item].setDispear(true)
         })
       }
+
     }
     // return array
   }
+
 
 
   // 游戏结束后的触摸事件处理逻辑
@@ -277,8 +293,10 @@ export default class Main {
 
     if (!isFlying) {
       this.stack.forEach(element => {
-        let count = countObj[element.elementType]
-        if (count == 3) {
+        // let count = countObj[element.elementType]
+        // if (count == 3) {
+
+        if (element.dispear) {
           if (element.isPlayMusic) {
             this.music.playExplosion()
             console.log('111')
