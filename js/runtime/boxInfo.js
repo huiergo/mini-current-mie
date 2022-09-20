@@ -14,13 +14,16 @@ export default class BoxInfo extends Animation {
 
         this.speedX = 0
         this.speedY = 0
+
+        //用于判断下层box是否可点
         this.fallDown = false
-        this.visible = true
-        this.canClick = true
+
+        //标识box即将被消除
         this.willRemove = false
 
-        // attention:
-        this.dispear = false
+        //标识box是否可点
+        this.canClick = true
+
         this.initExplosionAnimation()
     }
 
@@ -43,8 +46,8 @@ export default class BoxInfo extends Animation {
     }
 
 
-    setDispear(dispear) {
-        this.dispear = dispear
+    setWillRemove(willRemove) {
+        this.willRemove = willRemove
     }
 
     setFallDown(fallDown) {
@@ -54,10 +57,6 @@ export default class BoxInfo extends Animation {
     updatePosition(x, y) {
         this.x = x
         this.y = y
-    }
-    // add: 可以用来更新 disabledImg
-    updateImage(imgSrc) {
-        this.img = imgSrc
     }
 
     // 预定义爆炸的帧动画

@@ -44,17 +44,5 @@ export default class BackGround extends Sprite {
       screenWidth,
       screenHeight
     )
-
-    ctx.drawImage(
-      this.img,
-      0,
-      0,
-      this.width,
-      this.height,
-      0,
-      this.top,
-      screenWidth,
-      screenHeight
-    )
   }
 }

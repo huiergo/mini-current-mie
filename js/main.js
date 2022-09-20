@@ -9,12 +9,7 @@ const ctx = canvas.getContext('2d')
 let score = 0;
 
 const speed = 10;
-// todo: 现在是每层的图案是一样的，这个需要做到 图片随机， 所以 这里要改！！！
-let countObj = {
-  0: 0,
-  1: 0,
-  2: 0,
-};
+
 /**
  * 游戏主函数
  */
@@ -22,7 +17,6 @@ export default class Main {
   constructor() {
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
-
     this.restart()
   }
 
@@ -104,9 +98,7 @@ export default class Main {
       this.stack.splice(insertIndex, 0, box)
     }
 
-    this.dispearSame(this.stack, 3)
-
-    this.initCountObj()
+    this.willRemoveSame(this.stack, 3)
 
     // 重新规整数据，赋值targetY，targetX
     this.stack.forEach((element, index) => {
@@ -123,44 +115,20 @@ export default class Main {
         k = distanceX / distanceY
       }
       element.setVelocity(k * speed, speed)
-      countObj[element.elementType]++
-      if (countObj[element.elementType] === 3) {
-        // element.isPlayMusic = true
-      }
-
-    });
-
-    this.stack.forEach(element => {
-      // let count = countObj[element.elementType]
-      // if (count == 3) {
-      if (element.dispear) {
-        element.willRemove = true
-      } else {
-        element.willRemove = false
-      }
     });
   }
-
-  initCountObj() {
-    countObj = {
-      0: 0,
-      1: 0,
-      2: 0,
-    };
-  }
-
 
   // 判断3个就消除: 
   // 扩展算法： 连着几个消掉
 
-  dispearSame(array, count) {
+  willRemoveSame(array, count) {
     // let array = deepClone(paramsArr)
     for (let i = 0; i < array.length; i++) {
       //  如果有一个不相等， i 就需要移动到当前 j 的位置
       // 如果都相等 ， 1. 消除3个， 2  i 移动到最后一个 j的位置
 
       let flag = 1 // 判断 flag === count
-      let flagIndexList = []  // 设置 满足条件 的元素 dispear = true
+      let flagIndexList = []  // 设置 满足条件 的元素 willRemove = true
       let c = 1 // 控制 j 加加的次数
 
       for (let j = i + c; c < count; j++) {
@@ -175,7 +143,7 @@ export default class Main {
         flagIndexList.push(i)
         i = i + count - 1
         flagIndexList.forEach(item => {
-          array[item].setDispear(true)
+          array[item].setWillRemove(true)
         })
       }
 
@@ -214,9 +182,7 @@ export default class Main {
     // 去重算法，boom
     if (!isFlying) {
       this.stack.forEach(element => {
-        // let count = countObj[element.elementType]
-        // if (count == 3) {
-        if (element.dispear) {
+        if (element.willRemove) {
           if (!element.isStart) {
             element.playAnimation()
             this.music.playExplosion()
