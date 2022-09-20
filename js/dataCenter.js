@@ -1,4 +1,4 @@
-import BoxInfo from './base/boxInfo'
+import BoxInfo from './runtime/boxInfo'
 let instance
 
 const BOX_IMG = 'images/enemy.png'
