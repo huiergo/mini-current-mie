@@ -42,11 +42,11 @@ export default class Sprite {
   drawRoundRectColor(context, x, y, w, h, r) {  //绘制圆角矩形（纯色填充）
     context.save();
     if (this.canClick) {
-      context.fillStyle = "#fff";
-      context.strokeStyle = '#fff';
+      context.fillStyle = "#000000";
+      context.strokeStyle = '#00000050';
     } else {
-      context.fillStyle = "#ccc";
-      context.strokeStyle = '#ccc';
+      context.fillStyle = "#000000";
+      context.strokeStyle = '#00000050';
     }
 
     context.lineJoin = 'round';  //交点设置成圆角

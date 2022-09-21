@@ -12,4 +12,8 @@ export default class BackGround extends Sprite {
   constructor(ctx) {
     super(BG_IMG_SRC, 0, 0, BG_WIDTH, BG_HEIGHT)
   }
+
+  updateImgSrc(imgSrc) {
+    this.imgSrc = imgSrc
+  }
 }

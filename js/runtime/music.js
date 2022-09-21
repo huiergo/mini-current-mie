@@ -22,7 +22,8 @@ export default class Music {
     // this.playBgm()
   }
 
-  playBgm() {
+  playBgm(src = 'audio/bgm.mp3') {
+    this.bgmAudio.src = src
     this.bgmAudio.play()
   }
 

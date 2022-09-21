@@ -39,6 +39,7 @@ export default class Main {
     this.bg = new BackGround(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
+    this.music.playBgm()
 
     this.dataCenter = new DataCenter()
 
