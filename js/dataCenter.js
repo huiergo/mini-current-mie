@@ -55,6 +55,8 @@ export default class DataCenter {
         this.generaterBoxData()
         // attention: 
         this.judgeOverlay()
+
+        this.gameOver = false
     }
 
     reset() {
@@ -63,6 +65,7 @@ export default class DataCenter {
         this.animations = []
         this.boxDataFlat = []
         this.stack = []
+        this.gameOver = false
 
         this.generaterBoxData()
         // attention: 

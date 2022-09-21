@@ -60,6 +60,16 @@ export default class Main {
     let touchX = e.changedTouches[0].clientX
     let touchY = e.changedTouches[0].clientY
     let touchIndex = -1
+    // add: 判断是否点击了重新开始按钮
+    // const area = this.gameinfo.btnArea
+
+    // if (touchX >= area.startX
+    //   && touchX <= area.endX
+    //   && touchY >= area.startY
+    //   && touchY <= area.endY) {
+    //   console.log('点击了重新开始')
+    // }
+
     this.dataCenter.boxDataFlat.forEach((box, index) => {
       let isXok = (touchX >= box.x && touchX <= box.x + box.width)
       let isYok = (touchY >= box.y && touchY <= box.y + box.height)
@@ -161,9 +171,21 @@ export default class Main {
     }
   }
 
+  judgeGameOver() {
+    // // let isAllWillRemove = this.dataCenter.stack.every(i => i.willRemove = true)
+    // // if (isAllWillRemove && this.dataCenter.stack.length === 7) {
+    // //   this.dataCenter.gameOver = true
+    // // }
+    // if (this.dataCenter.stack.length === 0) {
+    //   this.dataCenter.gameOver = true
+    // }
+    // console.log('--->', this.dataCenter.gameOver)
+  }
+
 
   // 游戏逻辑更新主函数
   update() {
+    if (this.dataCenter.gameOver) return
     let isFlying = false
     let isBooming = false
 
@@ -235,6 +257,8 @@ export default class Main {
           this.dataCenter.score++;
         }
       });
+      this.judgeGameOver()
+
     }
   }
 
@@ -273,6 +297,11 @@ export default class Main {
 
     //todo 绘制分数
     this.gameinfo.renderGameScore(ctx, this.dataCenter.score)
+
+    // 游戏结束停止帧循环
+    if (this.dataCenter.gameOver) {
+      this.gameinfo.renderGameOver(ctx, this.dataCenter.score)
+    }
   }
 }
 

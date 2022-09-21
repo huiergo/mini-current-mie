@@ -5,6 +5,19 @@ const atlas = new Image()
 atlas.src = 'images/Common.png'
 
 export default class GameInfo {
+  constructor() {
+    /**
+  * 重新开始按钮区域
+  * 方便简易判断按钮点击
+  */
+    this.btnArea = {
+      startX: screenWidth / 2 - 40,
+      startY: screenHeight / 2 - 100 + 180,
+      endX: screenWidth / 2 + 50,
+      endY: screenHeight / 2 - 100 + 255
+    }
+  }
+
   renderGameScore(ctx, score) {
     ctx.fillStyle = '#ffffff'
     ctx.font = '50px Arial'
@@ -48,15 +61,6 @@ export default class GameInfo {
       screenHeight / 2 - 100 + 205
     )
 
-    /**
-     * 重新开始按钮区域
-     * 方便简易判断按钮点击
-     */
-    this.btnArea = {
-      startX: screenWidth / 2 - 40,
-      startY: screenHeight / 2 - 100 + 180,
-      endX: screenWidth / 2 + 50,
-      endY: screenHeight / 2 - 100 + 255
-    }
+
   }
 }
