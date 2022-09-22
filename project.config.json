@@ -41,7 +41,7 @@
   "compileType": "game",
   "libVersion": "2.20.1",
   "appid": "wxefff844a3be2ddfe",
-  "projectname": "minigame-current",
+  "projectname": "minigame-current-flight",
   "packOptions": {
     "ignore": [
       {
