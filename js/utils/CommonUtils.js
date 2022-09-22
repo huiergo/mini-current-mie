@@ -80,7 +80,7 @@ export function generaterBoxData(boxData, array, level) {
 
     randomZeroFlag(array, totalImgCount)
 
-    fillBox(array, gameMap.typeCount)
+    fillRandomBox(array, gameMap.typeCount)
 }
 
 export function judgeOverlay(boxDataFlat) {
@@ -174,7 +174,7 @@ export function insertElementToArray(array, box) {
 * @param typeCount 
 * @param array
 */
-function fillBox(array, typeCount) {
+function fillRandomBox(array, typeCount) {
     if (array.length % 3 != 0) {
         return
     }
