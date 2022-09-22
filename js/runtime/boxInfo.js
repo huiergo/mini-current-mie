@@ -72,7 +72,7 @@ export default class BoxInfo extends Animation {
         const frames = []
 
         const EXPLO_IMG_PREFIX = 'images/explosion'
-        const EXPLO_FRAME_COUNT = 10
+        const EXPLO_FRAME_COUNT = 18
 
         for (let i = 0; i < EXPLO_FRAME_COUNT; i++) {
             frames.push(`${EXPLO_IMG_PREFIX + (i + 1)}.png`)
