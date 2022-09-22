@@ -186,6 +186,7 @@ function fillBox(array, typeCount) {
         if (index % singleCount == 0) {
             elementType++;
         }
+        // 依次生成 111 222 333
         elementTypeList.push(elementType);
     }
 
@@ -194,6 +195,7 @@ function fillBox(array, typeCount) {
     //打乱顺序
     shuffle(elementTypeList)
 
+    // 给打乱后的数组，依次赋值 type类型和imgsrc
     elementTypeList.forEach((type, index) => {
         array[index].setElementType(type)
         array[index].setImgSrc(imageList[type])
