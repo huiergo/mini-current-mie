@@ -1,34 +1,6 @@
-import BoxInfo from './runtime/boxInfo'
+import { generaterBoxData, judgeOverlay } from './utils/commonUtils'
+
 let instance
-
-const BOX_IMG = 'images/enemy.png'
-const BOX_WIDTH = 50
-const BOX_HEIGHT = 50
-
-//count 必须定义好，所有 count 相加 ， 被 3 整除
-const layerList = [
-    {
-        row: 3,
-        column: 3,
-        x: 0,//第一层 起始点x
-        y: 0,//第一层 起始点y
-        count: 0
-    },
-    {
-        row: 3,
-        column: 3,
-        x: BOX_WIDTH / 2,
-        y: BOX_HEIGHT / 2,
-        count: 0
-    },
-]
-
-const IMGTYPE = {
-    1: 'images/enemy.png',
-    2: 'images/bullet.png',
-    3: 'images/explosion19.png'
-}
-
 
 /**
  * 全局状态管理器
@@ -52,140 +24,130 @@ export default class DataCenter {
         this.animations = []
         this.score = 0
 
-        this.generaterBoxData()
-        // attention: 
-        this.judgeOverlay()
+        //当前是第一关
+        this.level = 1
+
+        generaterBoxData(this.boxData, this.boxDataFlat, this.level)
+
+        judgeOverlay(this.boxDataFlat)
+
+        this.gameOver = false
+        this.gameFinish = false
+
     }
 
+    /**
+     * 重置数据，重新开始
+     */
     reset() {
         this.score = 0
         this.boxData = []
         this.animations = []
         this.boxDataFlat = []
         this.stack = []
+        this.gameOver = false
 
-        this.generaterBoxData()
-        // attention: 
-        this.judgeOverlay()
-    }
-    generaterBoxData() {
-        let totalImgCount = 0
-        layerList.map((layerItem, index) => {
-            let tempList = []
-            totalImgCount += layerItem.count
-            for (let i = 0; i < layerItem.row; i++) {
-                for (let j = 0; j < layerItem.column; j++) {
-                    const boxItem = new BoxInfo(
-                        i + 1,
-                        j + 1,
-                        index,
-                        j * BOX_WIDTH + layerItem.x,
-                        i * BOX_HEIGHT + layerItem.y,
-                        IMGTYPE[1],
-                        BOX_WIDTH,
-                        BOX_WIDTH,
-                    );
-
-                    tempList.push(boxItem)
-                    this.boxDataFlat.push(boxItem)
-                }
-            }
-            this.boxData.push(tempList)
-        })
-
-        this.fillBox(this.boxDataFlat, 3)
-        // this.randomZeroFlag(this.boxDataFlat, 1)
-        console.log("-->>boxDataFlat", this.boxDataFlat)
+        generaterBoxData(this.boxData, this.boxDataFlat, this.level)
+        judgeOverlay(this.boxDataFlat)
     }
 
     /**
-     * 抽牌算法： 从总数中，抽取多少个数
-     * @param array 
-     * @param count 随机多少个数
+     * 移除上层覆盖物
      */
-    randomZeroFlag(array, count) {
-        //输出数组
-        var out = [];
-        //输出个数
-        while (out.length < count) {
-            var temp = Math.floor((Math.random() * array.length));
-            var ttt = array.splice(temp, 1)
-            out.push(ttt[0]);
-        }
-        return out
+    updateLayer() {
+        judgeOverlay(this.boxDataFlat)
     }
 
-    judgeOverlay() {
-        // 如果从第一层开始判断每个元素， 那么有n层的 四个判断， 所以就是 (n-1)*  4次比较
-        let array = this.boxDataFlat;
-        for (let i = 0; i < array.length - 1; i++) {
-            array[i].canClick = true
-            for (let j = i + 1; j < array.length; j++) {
-                if (array[j].layer > array[i].layer) {
-                    // 1层的（2，2） 判断是否被挡住， 需要知道 2层 是否有(1,1) (1,2), (2,1), (2,2)
-                    // （2，4）， 需要顶层 : (1,3), (1,4) , (2,3),(2,4)
-                    if (array[j].row === array[i].row && array[j].col === array[i].col && !array[j].fallDown) {
-                        // （2，4） -> top层： (2,4)
-                        array[i].canClick = false
-                    }
-                    if (array[j].row === array[i].row && array[j].col === array[i].col - 1 && !array[j].fallDown) {
-                        // （2，4） -> top层： (2,3)
-                        array[i].canClick = false
-                    }
-                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col && !array[j].fallDown) {
-                        // （2，4） -> top层： (1，4)
-                        array[i].canClick = false
-                    }
-                    if (array[j].row === array[i].row - 1 && array[j].col === array[i].col - 1 && !array[j].fallDown) {
-                        // （2，4） -> top层： (1，3)
-                        array[i].canClick = false
-                    }
+    updatePoint() {
+        let isFlying = false
+        this.stack.forEach(element => {
+            if (element.targetY > element.y) {
+                element.y = element.y + element.speedY
+            } else {
+                element.y = element.targetY
+            }
+
+            if (element.targetX > element.x) {
+                element.x = Math.abs(element.x - element.targetX) < element.speedX ? element.targetX : element.x + element.speedX
+            } else {
+                element.x = Math.abs(element.x - element.targetX) <= element.speedX ? element.targetX : element.x - element.speedX
+            }
+
+            if (element.targetY != element.y) {
+                isFlying = true
+            }
+        });
+        return isFlying
+    }
+
+    updateBoomState() {
+        let isBooming = false
+        this.stack.forEach(element => {
+            if (element.willRemove) {
+                if (!element.alreadyPlay) {
+                    element.playAnimation()
+                    // this.music.playExplosion()
                 }
             }
-        }
+            if (element.isPlaying) {
+                isBooming = true
+            }
+        });
+        return isBooming
     }
 
-    fillBox(array, typeCount) {
+    updateStackTargetPosition(basicSpeed) {
+        this.stack.forEach((element, index) => {
+            //设置目标位置
+            element.setTargetPoint(index * element.width, 400)
+            let distanceY = element.targetY - element.y
+            let distanceX = Math.abs(element.targetX - element.x)
 
-        if (array.length % 3 != 0) {
-            return
-        }
-
-        let elementTypeList = []
-        let elementType = 0
-        let singleCount = array.length / typeCount
-        for (let index = 0; index < array.length; index++) {
-            if (index % singleCount == 0) {
-                elementType++;
+            // 此处根据Y下落速度计算X下落速度，防止X位移距离过小，导致Y轴速度过快
+            let k = 0
+            if (distanceX == 0) {
+                k = 0
+            } else {
+                if (distanceY == 0) {
+                    distanceY = 1
+                }
+                k = distanceX / distanceY
             }
-            elementTypeList.push(elementType);
-        }
-
-        //打乱顺序
-        this.shuffle(elementTypeList)
-
-        elementTypeList.forEach((type, index) => {
-            array[index].setElementType(type)
-            array[index].setImgSrc(IMGTYPE[type])
+            element.setVelocity(k * basicSpeed, basicSpeed)
         });
     }
 
-    /**
-     * 洗牌算法:
-     * 该方法就是每次在数组中随机产生一个位置，依次将数组中的每一项与该次产生的随机位置上的元素交换位置：
-     * @param {arr} 即将重排的数组 
-     * @returns 重排后的数组
-     */
-    shuffle(arr) {
-        var l = arr.length
-        var index, temp
-        while (l > 0) {
-            index = Math.floor(Math.random() * l)
-            temp = arr[l - 1]
-            arr[l - 1] = arr[index]
-            arr[index] = temp
-            l--
+    judgeGameOver() {
+        //判断是否通关了
+        this.score = 0
+        let isAllFallDown = true
+        this.gameFinish = true
+        this.boxDataFlat.forEach(box => {
+            if (!box.willRemove) {
+                this.gameFinish = false
+            }
+            if (!box.fallDown) {
+                isAllFallDown = false
+            }
+            if (box.willRemove) {
+                this.score++;
+            }
+        })
+
+        //判断是否gameOver
+        let hasRemoveBox = false
+        this.stack.forEach(box => {
+            if (box.willRemove) {
+                hasRemoveBox = true
+            }
+        })
+        if (!hasRemoveBox && this.stack.length === 7) {
+            this.gameOver = true
         }
-        return arr
+
+        if (isAllFallDown && this.stack.length != 0 && !hasRemoveBox) {
+            this.gameOver = true
+        }
     }
 }
+
