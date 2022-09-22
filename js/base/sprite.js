@@ -2,8 +2,9 @@
  * 游戏基础的精灵类
  */
 export default class Sprite {
-  constructor(imgSrc = '', x = 0, y = 0, width = 0, height = 0) {
+  constructor(imgSrc = '', x = 0, y = 0, width = 0, height = 0, isDrawRect = true) {
     this.img = new Image()
+    this.isDrawRect = isDrawRect
 
     this.imgSrc = imgSrc
 
@@ -23,16 +24,17 @@ export default class Sprite {
    */
   drawToCanvas(ctx) {
     if (!this.visible) return
-    //绘制圆角矩形背景
-    this.drawRoundRectColor(ctx, this.x, this.y, this.width, this.height, 10)
+    if (this.isDrawRect) {
+      this.drawRoundRectColor(ctx, this.x, this.y, this.width, this.height, 10)
+    }
     //绘制上层图层
     this.img.src = this.imgSrc
     ctx.drawImage(
       this.img,
-      this.x,
-      this.y,
-      this.width,
-      this.height
+      this.x + 5,
+      this.y + 5,
+      this.width - 10,
+      this.height - 10
     )
   }
 
@@ -42,11 +44,11 @@ export default class Sprite {
   drawRoundRectColor(context, x, y, w, h, r) {  //绘制圆角矩形（纯色填充）
     context.save();
     if (this.canClick) {
-      context.fillStyle = "#000000";
-      context.strokeStyle = '#00000050';
+      context.fillStyle = "#000";
+      context.strokeStyle = '#000';
     } else {
-      context.fillStyle = "#000000";
-      context.strokeStyle = '#00000050';
+      context.fillStyle = "#fff";
+      context.strokeStyle = '#fff';
     }
 
     context.lineJoin = 'round';  //交点设置成圆角

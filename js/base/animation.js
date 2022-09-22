@@ -17,7 +17,7 @@ export default class Animation extends Sprite {
     this.isPlaying = false
 
     // add:
-    this.isStart = false
+    this.alreadyPlay = false
 
     // 动画是否需要循环播放
     this.loop = false
@@ -76,7 +76,7 @@ export default class Animation extends Sprite {
     this.visible = false
 
     // add: attention:
-    this.isStart = true
+    this.alreadyPlay = true
 
     this.isPlaying = true
     this.loop = loop

@@ -28,7 +28,7 @@ export default class WelCome {
         this.bg = new BackGround(ctx)
 
         this.music = new Music()
-        this.music.playBgm('audio/bgm_join.mp3')
+        this.music.playBgm('audio/bgm_home.mp3')
 
         this.bindLoop = this.loop.bind(this)
         this.hasEventBind = false
