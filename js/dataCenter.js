@@ -46,6 +46,7 @@ export default class DataCenter {
         this.boxDataFlat = []
         this.stack = []
         this.gameOver = false
+        this.gameFinish = false
 
         generaterBoxData(this.boxData, this.boxDataFlat, this.level)
         judgeOverlay(this.boxDataFlat)

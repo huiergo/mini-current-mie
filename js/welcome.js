@@ -45,7 +45,7 @@ export default class WelCome {
     // 实现游戏帧循环
     loop() {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        this.bg.updateImgSrc('images/bg_login.jpg')
+        this.bg.updateImgSrc('images/bg_join.png')
         this.bg.drawToCanvas(ctx)
         this.aniId = window.requestAnimationFrame(
             this.bindLoop,
@@ -62,8 +62,6 @@ export default class WelCome {
         )
 
         window.cancelAnimationFrame(this.aniId)
-
-
 
         setTimeout(() => {
             new Main()

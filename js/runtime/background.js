@@ -1,6 +1,6 @@
 import Sprite from '../base/sprite'
 
-const BG_IMG_SRC = 'images/bg_home.jpg'
+const BG_IMG_SRC = 'images/bg_home.webp'
 const BG_WIDTH = window.innerWidth
 const BG_HEIGHT = window.innerHeight
 
@@ -10,7 +10,7 @@ const BG_HEIGHT = window.innerHeight
  */
 export default class BackGround extends Sprite {
   constructor(ctx) {
-    super(BG_IMG_SRC, 0, 0, BG_WIDTH, BG_HEIGHT,false)
+    super(BG_IMG_SRC, 0, 0, BG_WIDTH, BG_HEIGHT, false)
   }
 
   updateImgSrc(imgSrc) {
