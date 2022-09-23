@@ -1,6 +1,6 @@
 import Sprite from '../base/sprite'
 
-const BG_IMG_SRC = 'images/bg_home.webp'
+const BG_IMG_SRC = 'images/bg_game.png'
 const BG_WIDTH = window.innerWidth
 const BG_HEIGHT = window.innerHeight
 
