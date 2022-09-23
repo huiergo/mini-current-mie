@@ -2,9 +2,8 @@
  * 游戏基础的精灵类
  */
 export default class Sprite {
-  constructor(imgSrc = '', x = 0, y = 0, width = 0, height = 0, isDrawRect = true) {
+  constructor(imgSrc = '', x = 0, y = 0, width = 0, height = 0) {
     this.img = new Image()
-    this.isDrawRect = isDrawRect
 
     this.imgSrc = imgSrc
 
@@ -24,17 +23,13 @@ export default class Sprite {
    */
   drawToCanvas(ctx) {
     if (!this.visible) return
-    if (this.isDrawRect) {
-      this.drawRoundRectColor(ctx, this.x, this.y, this.width, this.height, 10)
-    }
-    //绘制上层图层
     this.img.src = this.imgSrc
     ctx.drawImage(
       this.img,
-      this.x + 5,
-      this.y + 5,
-      this.width - 10,
-      this.height - 10
+      this.x,
+      this.y,
+      this.width,
+      this.height
     )
   }
 

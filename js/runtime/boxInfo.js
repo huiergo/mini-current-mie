@@ -1,19 +1,19 @@
 import Animation from "../base/animation"
 
 export default class BoxInfo extends Animation {
-    constructor(row, col, layer, x, y, img, width, height) {
-        super(img, x, y, width, height)
+    constructor(row, col, layer, targetX, targetY, img, width, height) {
+        super(img, 0, 0, width, height)
         this.layer = layer
         this.row = row
         this.col = col
 
         this.elementType = 1
 
-        this.targetX = x
-        this.targetY = y
+        this.targetX = targetX
+        this.targetY = targetY
 
-        this.speedX = 0
-        this.speedY = 0
+        this.speedX = 6
+        this.speedY = 6
 
         //用于判断下层box是否可点
         this.fallDown = false
@@ -65,6 +65,26 @@ export default class BoxInfo extends Animation {
 
     setImgSrc(imgSrc) {
         this.imgSrc = imgSrc
+    }
+
+    /**
+     * 将精灵图绘制在canvas上
+     */
+    drawToCanvas(ctx) {
+        if (!this.visible) return
+        if (this.canClick) {
+            this.img.src = `images/${this.elementType}_1.png`
+        } else {
+            this.img.src = `images/${this.elementType}_0.png`
+        }
+
+        ctx.drawImage(
+            this.img,
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        )
     }
 
     // 预定义爆炸的帧动画

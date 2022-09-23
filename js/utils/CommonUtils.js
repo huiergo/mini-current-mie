@@ -81,6 +81,8 @@ export function generaterBoxData(boxData, array, level) {
     randomZeroFlag(array, totalImgCount)
 
     fillRandomBox(array, gameMap.typeCount)
+
+    console.log("->>>", array)
 }
 
 export function judgeOverlay(boxDataFlat) {
@@ -88,8 +90,9 @@ export function judgeOverlay(boxDataFlat) {
     let array = boxDataFlat;
     for (let i = 0; i < array.length - 1; i++) {
         array[i].canClick = true
-        for (let j = i + 1; j < array.length; j++) {
+        for (let j = 0; j < array.length; j++) {
             if (array[j].layer > array[i].layer) {
+                // (1,1),........(1,1)
                 // 1层的（2，2） 判断是否被挡住， 需要知道 2层 是否有(1,1) (1,2), (2,1), (2,2)
                 // （2，4）， 需要顶层 : (1,3), (1,4) , (2,3),(2,4)
                 if (array[j].row === array[i].row && array[j].col === array[i].col && !array[j].fallDown) {

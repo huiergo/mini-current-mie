@@ -60,7 +60,7 @@ export default class DataCenter {
 
     updatePoint() {
         let isFlying = false
-        this.stack.forEach(element => {
+        this.boxDataFlat.forEach(element => {
             if (element.targetY > element.y) {
                 element.y = element.y + element.speedY
             } else {
@@ -80,13 +80,13 @@ export default class DataCenter {
         return isFlying
     }
 
-    updateBoomState() {
+    updateBoomState(fn) {
         let isBooming = false
         this.stack.forEach(element => {
             if (element.willRemove) {
                 if (!element.alreadyPlay) {
                     element.playAnimation()
-                    // this.music.playExplosion()
+                    fn && fn()
                 }
             }
             if (element.isPlaying) {

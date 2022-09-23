@@ -41,8 +41,8 @@ export const secondMap = {
             column: 5,
             x: BOX_WIDTH / 2 + BOX_OFFSET_X,
             y: BOX_HEIGHT / 2 + BOX_OFFSET_Y,
-            count: 0
-        },
+            count: 3
+        }
     ],
     typeCount: 5
 }

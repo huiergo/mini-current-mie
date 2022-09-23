@@ -16,13 +16,13 @@ export default class GameInfo {
   }
 
   renderGameScore(ctx, score) {
-    ctx.fillStyle = '#ffffff'
+    ctx.fillStyle = '#000'
     ctx.font = '50px Arial'
 
     ctx.fillText(
       score,
-      screenWidth / 2,
-      300
+      screenWidth * 2 / 3,
+      600
     )
   }
 

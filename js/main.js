@@ -129,7 +129,9 @@ export default class Main {
 
     // playBoom
     if (!isFlying) {
-      isBooming = this.dataCenter.updateBoomState()
+      isBooming = this.dataCenter.updateBoomState(() => {
+        this.music.playExplosion()
+      })
     }
 
     //最终平移
