@@ -23,4 +23,7 @@
 └── main.js                                // 游戏入口主函数
 
 ```
+
+微信小游戏，堆叠布局， 三消动画，消消乐，动画和音效，仿某羊了个羊
+Demo 游戏效果：
 <img width="240" alt="image" src="https://user-images.githubusercontent.com/18606134/192244395-5392d36a-6a3d-4577-8b4c-e4232aefe06f.png">
